@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-
+<p th:each="worker:${workers}">
+    <span th:text="${worker.name}"></span>
+    <span th:text="${worker.age}"></span>
+    <span th:text="${worker.experience}"></span>
+</p>
 </body>
 </html>
