@@ -13,27 +13,23 @@ public class MyController {
     private static final String FILE_NAME = "workers.data";
     @GetMapping("/worker/create")
     public String createWorkers(){
+        // Information for all new workers
+        String[] names = ["John", "Mary", "Charles", "Becky", "Steve"];
+        int[] ages = [18, 18, 22, 52, 23];
+        String[] genders = ["male", "female", "male", "female", "male"];
+        int[] experiences = [1, 2, 5, 20, 7];
+
+        // Initialize all workers into array "wo"
         Worker[] wo = new Worker[5];
-        wo[0] = new Worker();
-        wo[0].setName("John");
-        wo[0].setAge(18);
-        wo[0].setGender("male");
-        wo[1] = new Worker();
-        wo[1].setName("Mary");
-        wo[1].setAge(18);
-        wo[1].setGender("female");
-        wo[2] = new Worker();
-        wo[2].setName("Charles");
-        wo[2].setAge(22);
-        wo[2].setGender("male");
-        wo[3] = new Worker();
-        wo[3].setName("Becky");
-        wo[3].setAge(52);
-        wo[3].setGender("female");
-        wo[4] = new Worker();
-        wo[4].setName("Steve");
-        wo[4].setAge(23);
-        wo[4].setGender("male");
+        for (int i = 0; i < wo.length; i++) {
+            wo[i] = new Worker();
+            wo[i].setName(names[i]);
+            wo[i].setAge(ages[i]);
+            wo[i].setGender(genders[i]);
+            wo[i].setExperience(experiences[i]);
+        }
+
+        // Creates an ObjectOutputStream to write the worker array to a file, and handles any errors that occur while writing the file.
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             out.writeObject(wo);
         } catch (IOException e) {
@@ -41,6 +37,8 @@ public class MyController {
         }
         return "create";
     }
+
+    // Helper function to return an array of all the workers
     private Worker[] loadWorkers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME)))
         {
@@ -50,34 +48,58 @@ public class MyController {
             throw new RuntimeException(e);
         }
     }
+
     @GetMapping("/worker/{ageValue}")
     public String age(@PathVariable int ageValue, Model model) {
+        // Get all the available workers
         Worker[] wo = loadWorkers();
-        Worker[] res_wo = new Worker[5];
+        Worker[] temp_workers = new Worker[5];
         int j = 0;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < wo.length; i++) {
             if (wo[i].getAge() == ageValue) {
-                res_wo[j] = wo[i];
+                temp_workers[j] = wo[i];
+                j++;
             }
         }
 
-        model.addAttribute(res_wo);
+        // Since temp_workers contains j elements inside it with possible null values
+        // Get rid of null values by creating a result array of only j number of workers and copying elements
+        const final int count = j;
+        int i = 0;
+        Worker[] workers = new Worker[count];
+        for (Worker worker: temp_workers) {
+            workers[i] = worker;
+            i++;
+        }
 
-        return "age";
+        model.addAttribute("workers", workers);
+
+        return "ageView";
     }
     @GetMapping("/worker/sex/{gender}")
     public String gender(@PathVariable String gender, Model model) {
         Worker[] wo = loadWorkers();
-        Worker[] temp_wo = new Worker[5];
+        Worker[] temp_workers = new Worker[5];
         int j = 0;
-        for (int i = 0; i < 5; i++) {
-            if(wo[i].getGender() == gender) {
-                temp_wo[j] = wo[i];
+        for (int i = 0; i < wo.length; i++) {
+            if(wo[i].getGender().equals(gender)) {
+                temp_workers[j] = wo[i];
                 j++;
             }
         }
-        model.addAttribute(temp_wo);
-        return "gender";
+
+        // Since temp_workers contains j elements inside it with possible null values
+        // Get rid of null values by creating a result array of only j number of workers and copying elements
+        const final int count = j;
+        int i = 0;
+        Worker[] workers = new Worker[count];
+        for (Worker worker: temp_workers) {
+            workers[i] = worker;
+            i++;
+        }
+
+        model.addAttribute("workers", workers);
+        return "genderView";
     }
 }

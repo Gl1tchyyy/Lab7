@@ -5,6 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-<p th:each="worker:${workers}"><scan th:text="${work.name}"></p>
+<p th:each="worker:${workers}">
+    <span th:text="${worker.name}"></span>
+    <span th:text="${worker.gender}"></span>
+    <span th:text="${worker.experience}"></span>
+</p>
 </body>
 </html>
