@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Workers by Gender</title>
+</head>
+<body>
+<p th:each="worker:${workers}">
+    <h1>Workers</h1>
+    <table th:if="${workers.length > 0}">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Years of Experience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="worker : ${workers}">
+            <td th:text="${worker.name}"></td>
+            <td th:text="${worker.age}"></td>
+            <td th:text="${worker.experience}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
